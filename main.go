@@ -2,36 +2,11 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"net/http"
-	"time"
+	"pass/helper"
 
 	"github.com/gin-gonic/gin"
 )
-
-func generatePassword(length int, includeUppercase, includeLowercase, includeNumbers, includeSpecialChars bool) string {
-	charset := ""
-	if includeUppercase {
-		charset += "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	}
-	if includeLowercase {
-		charset += "abcdefghijklmnopqrstuvwxyz"
-	}
-	if includeNumbers {
-		charset += "0123456789"
-	}
-	if includeSpecialChars {
-		charset += "!@#$%^&*()-_=+[]{}|;:'\",.<>?/\\"
-	}
-
-	password := make([]byte, length)
-	rand.Seed(time.Now().UnixNano())
-	for i := range password {
-		password[i] = charset[rand.Intn(len(charset))]
-	}
-
-	return string(password)
-}
 
 func main() {
 	router := gin.Default()
@@ -61,7 +36,7 @@ func main() {
 			includeSpecialChars = true
 		}
 
-		password := generatePassword(length, includeUppercase, includeLowercase, includeNumbers, includeSpecialChars)
+		password := helper.GeneratePassword(length, includeUppercase, includeLowercase, includeNumbers, includeSpecialChars)
 
 		c.HTML(http.StatusOK, "generated_password.html", gin.H{
 			"password": password,
